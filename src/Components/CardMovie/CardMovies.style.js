@@ -13,10 +13,11 @@ export default StyleSheet.create({
 		fontSize: 17,
 		marginTop: 10,
 		color: '#fff',
+		height: 45,
 	},
 	cardImage: {
-		width: 140,
-		height: 180,
+		width: 120,
+		height: 160,
 		borderRadius: 20,
 		resizeMode: 'cover',
 		shadowColor: '#000',

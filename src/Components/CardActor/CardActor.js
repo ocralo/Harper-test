@@ -6,21 +6,19 @@ import { Avatar, Rating, AirbnbRating } from 'react-native-elements';
 //import styles
 import style from './CardActor.style';
 
-const CardActor = ({ title, ratingNumber, imageUrl }) => {
-	const ratingCompleted = (rating) => {
-		console.log('Rating is: ' + rating);
-	};
+const CardActor = ({ title, imageUrl }) => {
 	return (
 		<View style={style.cardActor}>
 			<Avatar
 				rounded
 				size="medium"
 				source={{
-					uri:
-						'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg',
+					uri: `https://image.tmdb.org/t/p/w500${imageUrl}`,
 				}}
 			/>
-			<Text style={style.cardTitle}>{title}</Text>
+			<Text numberOfLines={2} style={style.cardTitle}>
+				{title}
+			</Text>
 		</View>
 	);
 };

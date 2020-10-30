@@ -46,7 +46,7 @@ export default StyleSheet.create({
 	buttonTitleWatch: { fontWeight: 'bold' },
 	movieTextContent: { marginTop: 10, lineHeight: 20, color: '#aaaaaa' },
 	actorList: { marginTop: 20 },
-	primaryDataContent: { width: 280 },
+	primaryDataContent: { flex: 4, width: 280 },
 	primaryData: { flexDirection: 'row', justifyContent: 'space-between' },
 	primaryDataTitle: { fontWeight: 'bold', color: '#fff' },
 	primaryDataText: { color: '#aaaaaa', textAlign: 'left', width: 160 },

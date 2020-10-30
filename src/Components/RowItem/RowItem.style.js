@@ -11,5 +11,6 @@ export default StyleSheet.create({
 		marginTop: 10,
 	},
 	titleRecomendation: { color: '#fff', fontWeight: 'bold' },
+	listRecomendation: { height: 500 },
 	seeAll: { color: '#d3d3d3' },
 });

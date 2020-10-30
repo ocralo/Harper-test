@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import {
 	View,
@@ -15,29 +15,41 @@ import styles from './Movie.style';
 // import components
 import CardActor from '../../Components/CardActor/CardActor';
 
-function Movie({ navigation }) {
-	const [ratingNumber, setRatingNumber] = useState(3);
-	const data = [
-		{
-			id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-			title: 'First Item',
-		},
-		{
-			id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-			title: 'Second Item',
-		},
-		{
-			id: '58694a0f-3da1-471f-bd96-145571e29d72',
-			title: 'Third Item',
-		},
-	];
+//importacion de librerias externas
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+
+//importacion de reducer de redux
+import {
+	getMoviesError,
+	getMoviesPending,
+	getMoviesEspecific,
+	getMovieCast,
+} from './../../Redux/Reducer/index';
+
+//importacion de componentes
+import {
+	fetchEspecificMovies,
+	fetchMovieCast,
+} from './../../Requests/Requests';
+
+function Movie({ navigation, route, fetchMovie, fetchMovieCast, movie, cast }) {
+	const [ratingNumber] = useState(3);
+
+	const { idMovie } = route.params;
+
+	useEffect(() => {
+		fetchMovie('https://api.themoviedb.org/3/movie/', idMovie);
+		fetchMovieCast(`http://api.themoviedb.org/3/movie/${idMovie}/casts`);
+	}, [fetchMovie, fetchMovieCast, idMovie]);
+
 	return (
 		<SafeAreaView style={styles.containerSafeArea}>
+			{/* console.log(cast) */}
 			<View style={styles.containerMovie}>
 				<ImageBackground
 					source={{
-						uri:
-							'https://image.tmdb.org/t/p/w500/g63KmFgqkvXu6WKS23V56hqEidh.jpg',
+						uri: `https://image.tmdb.org/t/p/w500/${movie.backdrop_path}`,
 					}}
 					style={styles.movieContainerImage}
 					imageStyle={{
@@ -55,7 +67,7 @@ function Movie({ navigation }) {
 					</View>
 				</ImageBackground>
 				<View style={styles.movieBody}>
-					<Text style={styles.movieTitle}>Holi BB</Text>
+					<Text style={styles.movieTitle}>{movie.title}</Text>
 					<View style={styles.movieheader}>
 						<Button
 							buttonStyle={styles.buttonWatch}
@@ -66,44 +78,57 @@ function Movie({ navigation }) {
 						<Rating
 							style={styles.rating}
 							type="custom"
+							ratingImage={require('./../../Assets/Img/star-black.png')}
+							ratingBackgroundColor="#FFE200"
 							ratingCount={5}
-							startingValue={ratingNumber}
+							startingValue={movie.vote_average}
 							imageSize={23}
 							readonly={true}
 							ratingBackgroundColor="#c8c7c8"
 						/>
 					</View>
-					<Text style={styles.movieTextContent}>
-						Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-						Nullam aliquet luctus magna, ac feugiat lacus semper eget.
-						Vestibulum feugiat metus eu lectus luctus laoreet. Praesent ac
-						libero sed quam aliquam dictum sed et justo. Etiam suscipit
-						eget neque vitae pretium. Fusce at enim pulvinar, pharetra
-						risus quis, rutrum felis. Sed nec scelerisque magna.
-					</Text>
+					<Text style={styles.movieTextContent}>{movie.overview}</Text>
 					<FlatList
 						contentContainerStyle={styles.actorList}
-						data={data}
-						renderItem={({ item }) => <CardActor title={item.title} />}
+						data={cast}
+						renderItem={({ item }) => (
+							<CardActor
+								title={item.name}
+								imageUrl={item.profile_path}
+							/>
+						)}
 						horizontal={true}
+						keyExtractor={(item) => `list-item-${item.id}`}
 					/>
 					<View style={styles.primaryDataContent}>
 						<View style={styles.primaryData}>
 							<Text style={styles.primaryDataTitle}>Studio</Text>
-							<Text ellipsizeMode="tail" style={styles.primaryDataText}>
-								Warner, Bros
+							<Text
+								numberOfLines={1}
+								ellipsizeMode="tail"
+								style={styles.primaryDataText}
+							>
+								{movie.production_companies[0]?.name}
 							</Text>
 						</View>
 						<View style={styles.primaryData}>
 							<Text style={styles.primaryDataTitle}>Genero</Text>
-							<Text ellipsizeMode="tail" style={styles.primaryDataText}>
-								Warner, Bros
+							<Text
+								numberOfLines={1}
+								ellipsizeMode="tail"
+								style={styles.primaryDataText}
+							>
+								{movie.genres[0].name}
 							</Text>
 						</View>
 						<View style={styles.primaryData}>
 							<Text style={styles.primaryDataTitle}>Lanzamiento</Text>
-							<Text ellipsizeMode="tail" style={styles.primaryDataText}>
-								Warner, Bross
+							<Text
+								numberOfLines={1}
+								ellipsizeMode="tail"
+								style={styles.primaryDataText}
+							>
+								{movie.release_date?.replace(/-/g, '/')}
 							</Text>
 						</View>
 					</View>
@@ -116,4 +141,29 @@ Movie.propTypes = { navigation: PropTypes.object };
 
 Movie.defaultProps = {};
 
-export default Movie;
+/**
+ * trae los estados de la storage
+ * @param {*} state
+ */
+const mapStateToProps = (state) => ({
+	error: getMoviesError(state),
+	movie: getMoviesEspecific(state),
+	pending: getMoviesPending(state),
+	cast: getMovieCast(state),
+});
+
+/**
+ * metodo para emitir acciones, para modificar el estado
+ * de la storage
+ * @param {*} dispatch
+ */
+const mapDispatchToProps = (dispatch) =>
+	bindActionCreators(
+		{
+			fetchMovie: fetchEspecificMovies,
+			fetchMovieCast: fetchMovieCast,
+		},
+		dispatch,
+	);
+
+export default connect(mapStateToProps, mapDispatchToProps)(Movie);
