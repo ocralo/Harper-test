@@ -6,6 +6,7 @@ import {
 	FlatList,
 	ImageBackground,
 	TouchableOpacity,
+	ScrollView,
 } from 'react-native';
 import { Rating, Icon, Button } from 'react-native-elements';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -46,7 +47,7 @@ function Movie({ navigation, route, fetchMovie, fetchMovieCast, movie, cast }) {
 	return (
 		<SafeAreaView style={styles.containerSafeArea}>
 			{/* console.log(cast) */}
-			<View style={styles.containerMovie}>
+			<ScrollView style={styles.containerMovie}>
 				<ImageBackground
 					source={{
 						uri: `https://image.tmdb.org/t/p/w500/${movie.backdrop_path}`,
@@ -133,7 +134,7 @@ function Movie({ navigation, route, fetchMovie, fetchMovieCast, movie, cast }) {
 						</View>
 					</View>
 				</View>
-			</View>
+			</ScrollView>
 		</SafeAreaView>
 	);
 }

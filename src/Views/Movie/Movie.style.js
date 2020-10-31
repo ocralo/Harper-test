@@ -10,9 +10,9 @@ export default StyleSheet.create({
 		backgroundColor: '#2b3948',
 	},
 	movieContainerImage: {
-		flex: 2,
 		paddingRight: 30,
 		paddingLeft: 30,
+		height: 300,
 	},
 	movieImage: {
 		height: 300,
@@ -24,7 +24,7 @@ export default StyleSheet.create({
 		justifyContent: 'space-between',
 		flexDirection: 'row',
 	},
-	movieBody: { flex: 3, padding: 30 },
+	movieBody: { flex: 1, padding: 30 },
 	movieTitle: {
 		fontSize: 30,
 		textAlign: 'justify',
